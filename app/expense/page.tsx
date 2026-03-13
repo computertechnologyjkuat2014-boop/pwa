@@ -15,7 +15,10 @@ export default function ExpensesPage() {
 
   const handleAdd = async (expense: Omit<Expense, "id">) => {
     // Add to IndexedDB (Offline-first)
-    await db.expenses.add(expense);
+    await db.expenses.add({
+      ...expense,
+      id: Date.now().toString(),
+    });
   };
 
   const handleDelete = async (id: string) => {
