@@ -11,7 +11,7 @@ export default function ExpenseForm({ onAdd }: Props) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [category, setCategory] = useState("Food");
+  const [category, setCategory] = useState("Food and Drink");
 
   useEffect(() => {
     setDate(new Date().toISOString().split("T")[0]);
@@ -100,11 +100,11 @@ export default function ExpenseForm({ onAdd }: Props) {
               required
               className="w-full pl-11 pr-4 py-3 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-rose-500 transition-all outline-none appearance-none text-slate-600"
             >
-              <option>Food & Drink</option>
-              <option>Transport</option>
-              <option>Shopping</option>
-              <option>Bills</option>
-              <option>Entertainment</option>
+              <option value={"Food and Drink"}>Food & Drink</option>
+              <option value={"Transport"}>Transport</option>
+              <option value={"Shopping"}>Shopping</option>
+              <option value={"Bills"}>Bills</option>
+              <option value={"Entertainment"}>Shopping</option>
             </select>
           </div>
         </div>
