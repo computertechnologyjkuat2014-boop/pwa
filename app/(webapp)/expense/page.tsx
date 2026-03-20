@@ -29,18 +29,6 @@ export default function ExpensesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      <nav className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-10 px-4 py-4">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <Link
-            href="/"
-            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6 text-slate-600" />
-          </Link>
-          <h1 className="font-bold text-lg">Add Expense</h1>
-          <div className="w-10"></div> {/* Spacer for symmetry */}
-        </div>
-      </nav>
       <main className="max-w-2xl mx-auto p-4 space-y-8">
         <div className="bg-rose-700 rounded-3xl p-6 text-white shadow-lg shadow-rose-100 flex items-center justify-between overflow-hidden relative">
           <div className="relative z-10">
