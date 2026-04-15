@@ -56,7 +56,7 @@ export default function FootballPage() {
         <select
           value={matchday}
           onChange={(e) => setMatchday(Number(e.target.value))}
-          className="border border-gray-300 min-w-1/5 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 min-w-1/3 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {Array.from({ length: 38 }, (_, i) => i + 1).map((md) => (
             <option key={md} value={md}>

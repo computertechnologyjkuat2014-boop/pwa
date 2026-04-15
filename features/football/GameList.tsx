@@ -15,10 +15,15 @@ export default function GameList({ games, onUpdateGame }: GameListProps) {
   }
 
   return (
-    <ul className="space-y-2">
+    // <ul className="space-y-2">
+    //   {games.map((game) => (
+    //     <GameItem key={game.id} game={game} onUpdate={onUpdateGame} />
+    //   ))}
+    // </ul>
+    <div className="">
       {games.map((game) => (
         <GameItem key={game.id} game={game} onUpdate={onUpdateGame} />
       ))}
-    </ul>
+    </div>
   );
 }
