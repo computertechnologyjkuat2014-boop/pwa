@@ -8,22 +8,15 @@ import EventList from "./EventList";
 interface Props {
   items: ScheduleItem[];
   onDelete: (id: string) => Promise<void>;
-  selectedDate: string;
 }
 
 const date = new Date();
 const formatted = date.toISOString().split("T")[0];
 
-export default function ScheduleDisplay({
-  items,
-  onDelete,
-  selectedDate,
-}: Props) {
-  const [selectedDay, setSelectedDay] = useState<string | null>(
-    selectedDate || formatted,
-  );
+export default function ScheduleDisplay({ items, onDelete }: Props) {
+  const [selectedDay, setSelectedDay] = useState<string | null>(formatted);
   const [currentMonth, setCurrentMonth] = useState(
-    new Date(selectedDate || formatted),
+    new Date(selectedDay || formatted),
   );
 
   // Get all days in the current month
