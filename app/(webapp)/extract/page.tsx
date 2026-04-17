@@ -14,18 +14,23 @@ export default function ExtractPage() {
 
     try {
       // Fetch all data from each table
-      const [expenses, schedules, topics, games] = await Promise.all([
-        db.expenses.toArray(),
-        db.schedules.toArray(),
-        db.topics.toArray(),
-        db.games.toArray(),
-      ]);
+      const [expenses, schedules, topics, games, fixtures, predictions] =
+        await Promise.all([
+          db.expenses.toArray(),
+          db.schedules.toArray(),
+          db.topics.toArray(),
+          db.games.toArray(),
+          db.fixtures.toArray(),
+          db.predictions.toArray(),
+        ]);
 
       const data = {
         expenses,
         schedules,
         topics,
         games,
+        fixtures,
+        predictions,
         exportedAt: new Date().toISOString(),
       };
 
@@ -73,6 +78,8 @@ export default function ExtractPage() {
         db.schedules.clear(),
         db.topics.clear(),
         db.games.clear(),
+        db.fixtures.clear(),
+        db.predictions.clear(),
       ]);
 
       // Import data
@@ -81,6 +88,8 @@ export default function ExtractPage() {
         db.schedules.bulkAdd(data.schedules),
         db.topics.bulkAdd(data.topics),
         db.games.bulkAdd(data.games),
+        db.fixtures.bulkAdd(data.fixtures),
+        db.predictions.bulkAdd(data.predictions),
       ]);
 
       setMessage("Data imported successfully!");

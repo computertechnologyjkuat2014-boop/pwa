@@ -20,6 +20,19 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Developer Documentation
+
+When working on AI-driven changes or feature requests, save the original prompt and the generated response in a dedicated Markdown file under `docs/`.
+
+Use the template in `docs/prompt-response.md` to keep records consistent for future developers and code reviews.
+
+### Documentation Guidelines
+
+- Save the user prompt exactly as written.
+- Save the assistant response or generated code snippet.
+- Include the date and purpose of the change.
+- Store each prompt/response pair in a separate section or file inside `docs/`.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
