@@ -11,7 +11,7 @@ interface Props {
 }
 
 const date = new Date();
-const formatted = date.toISOString().split("T")[0];
+const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
 export default function ScheduleDisplay({ items, onDelete }: Props) {
   const [selectedDay, setSelectedDay] = useState<string | null>(formatted);
@@ -55,12 +55,10 @@ export default function ScheduleDisplay({ items, onDelete }: Props) {
     : [];
 
   const formatDateString = (day: number) => {
-    const dateObj = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth(),
-      day,
-    );
-    return dateObj.toISOString().split("T")[0];
+    const year = currentMonth.getFullYear();
+    const month = String(currentMonth.getMonth() + 1).padStart(2, "0");
+    const date = String(day).padStart(2, "0");
+    return `${year}-${month}-${date}`;
   };
 
   const previousMonth = () => {
