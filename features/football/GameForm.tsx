@@ -2,17 +2,24 @@
 "use client";
 
 import { useState } from "react";
-import { EPL_TEAMS } from "@/types/football";
+import { LEAGUES, LeagueKey } from "@/types/football";
 
 interface GameFormProps {
+  league: LeagueKey;
   matchday: number;
   onAddGame: (homeTeam: string, awayTeam: string, date?: string) => void;
 }
 
-export default function GameForm({ matchday, onAddGame }: GameFormProps) {
+export default function GameForm({
+  league,
+  matchday,
+  onAddGame,
+}: GameFormProps) {
   const [homeTeam, setHomeTeam] = useState("");
   const [awayTeam, setAwayTeam] = useState("");
   const [date, setDate] = useState("");
+
+  const teams = LEAGUES[league].teams;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +37,7 @@ export default function GameForm({ matchday, onAddGame }: GameFormProps) {
       className="bg-white p-6 rounded-lg shadow-md space-y-4"
     >
       <h3 className="text-xl font-semibold mb-4">
-        Add Game for Matchday {matchday}
+        Add Game for {LEAGUES[league].name} Matchday {matchday}
       </h3>
       <div>
         <label className="block text-sm font-medium mb-2">Home Team:</label>
@@ -41,7 +48,7 @@ export default function GameForm({ matchday, onAddGame }: GameFormProps) {
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select Home Team</option>
-          {EPL_TEAMS.map((team) => (
+          {teams.map((team) => (
             <option key={team} value={team}>
               {team}
             </option>
@@ -57,7 +64,7 @@ export default function GameForm({ matchday, onAddGame }: GameFormProps) {
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select Away Team</option>
-          {EPL_TEAMS.map((team) => (
+          {teams.map((team) => (
             <option key={team} value={team}>
               {team}
             </option>

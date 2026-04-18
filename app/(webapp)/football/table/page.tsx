@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/db";
-import { Game, EPL_TEAMS } from "@/types/football";
+import { Game, LEAGUES, LeagueKey } from "@/types/football";
 
 interface TeamStats {
   name: string;
@@ -15,18 +15,19 @@ interface TeamStats {
 }
 
 export default function TablePage() {
+  const [league, setLeague] = useState<LeagueKey>("EPL");
   const [teamStats, setTeamStats] = useState<TeamStats[]>([]);
 
   useEffect(() => {
-    loadTable();
-  }, []);
+    loadTable(league);
+  }, [league]);
 
-  const loadTable = async () => {
-    const games = await db.games.toArray();
+  const loadTable = async (lg: LeagueKey) => {
+    const games = await db.games.where("league").equals(lg).toArray();
     const stats: { [key: string]: TeamStats } = {};
 
-    // Initialize stats for all teams
-    EPL_TEAMS.forEach((team) => {
+    // Initialize stats for all teams in the league
+    LEAGUES[lg].teams.forEach((team) => {
       stats[team] = {
         name: team,
         points: 0,
@@ -72,7 +73,21 @@ export default function TablePage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">EPL League Table</h1>
+      <h1 className="text-3xl font-bold mb-6">League Table</h1>
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-2">Select League:</label>
+        <select
+          value={league}
+          onChange={(e) => setLeague(e.target.value as LeagueKey)}
+          className="border border-gray-300 min-w-1/3 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {Object.entries(LEAGUES).map(([key, leagueData]) => (
+            <option key={key} value={key}>
+              {leagueData.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
           <tr className="bg-gray-100">

@@ -4,6 +4,7 @@ export interface Game {
   homeTeam: string;
   awayTeam: string;
   matchday: number;
+  league: string; // Added league field
   date?: string; // Optional date for the game
   predictedOutcome?: "home" | "draw" | "away"; // Prediction for the game outcome
   actualOutcome?: "home" | "draw" | "away"; // Actual outcome after the game
@@ -183,22 +184,30 @@ export const OTHER_TEAMS = [
   "Port Vale",
   " Wigan Athletic",
 ];
-export const LEAGUES = {
-  EPL: "Premier League",
-  LALIGA: "La Liga",
-  LIGUE1: "Ligue 1",
-  SERIEA: "Serie A",
-  BUNDESLIGA: "Bundesliga",
-  BELGIUM: "Belgian Pro League",
-  OTHER: "Other",
-};
 
-export const ALL_TEAMS = {
-  [LEAGUES.EPL]: EPL_TEAMS,
-  [LEAGUES.LALIGA]: LA_LIGA_TEAMS,
-  [LEAGUES.LIGUE1]: LIGUE_1_TEAMS,
-  [LEAGUES.SERIEA]: SERIE_A_TEAMS,
-  [LEAGUES.BUNDESLIGA]: BUNDESLIGA_TEAMS,
-  [LEAGUES.BELGIUM]: BELGIAN_PRO_TEAMS,
-  [LEAGUES.OTHER]: OTHER_TEAMS,
+// League definitions
+export const LEAGUES = {
+  EPL: { name: "Premier League", teams: EPL_TEAMS, matchdays: 38 },
+  LA_LIGA: { name: "La Liga", teams: LA_LIGA_TEAMS, matchdays: 38 },
+  LIGUE_1: { name: "Ligue 1", teams: LIGUE_1_TEAMS, matchdays: 38 },
+  SERIE_A: { name: "Serie A", teams: SERIE_A_TEAMS, matchdays: 38 },
+  BUNDESLIGA: { name: "Bundesliga", teams: BUNDESLIGA_TEAMS, matchdays: 34 },
+  BELGIUM: {
+    name: "Belgian Pro League",
+    teams: BELGIAN_PRO_TEAMS,
+    matchdays: 34,
+  },
+  OTHER: { name: "Other", teams: OTHER_TEAMS, matchdays: 10 },
+} as const;
+
+export type LeagueKey = keyof typeof LEAGUES;
+
+export const ALL_TEAMS: Record<LeagueKey, string[]> = {
+  EPL: EPL_TEAMS,
+  LA_LIGA: LA_LIGA_TEAMS,
+  LIGUE_1: LIGUE_1_TEAMS,
+  SERIE_A: SERIE_A_TEAMS,
+  BUNDESLIGA: BUNDESLIGA_TEAMS,
+  BELGIUM: BELGIAN_PRO_TEAMS,
+  OTHER: OTHER_TEAMS,
 };

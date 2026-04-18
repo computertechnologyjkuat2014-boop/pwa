@@ -22,9 +22,9 @@ export class MyDatabase extends Dexie {
       topics: "++id, title, description, createdAt, updatedAt",
     });
     // Add version 2 for games
-    this.version(2).stores({
+    this.version(3).stores({
       games:
-        "++id, homeTeam, awayTeam, matchday, date, predictedOutcome, actualOutcome",
+        "++id, homeTeam, awayTeam, league, matchday, date, predictedOutcome, actualOutcome, [league+matchday]",
     });
     // Add version 3 for fixtures and predictions
     this.version(3).stores({
@@ -38,6 +38,11 @@ export class MyDatabase extends Dexie {
     // Add version 5 for actual outcome field on fixtures
     this.version(5).stores({
       fixtures: "++id, date, leagueWeek, createdAt, actualOutcome",
+    });
+    // Add version 6 for league field on games
+    this.version(6).stores({
+      games:
+        "++id, homeTeam, awayTeam, matchday, league, date, predictedOutcome, actualOutcome",
     });
   }
 }

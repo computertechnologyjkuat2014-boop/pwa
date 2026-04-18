@@ -4,26 +4,32 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { Game } from "@/types/football";
+import { Game, LEAGUES, LeagueKey } from "@/types/football";
 import GameForm from "@/features/football/GameForm";
 import GameList from "@/features/football/GameList";
 
 export default function FootballPage() {
+  const [league, setLeague] = useState<LeagueKey>("EPL");
   const [matchday, setMatchday] = useState(1);
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
-    loadGames(matchday);
-  }, [matchday]);
+    loadGames(league, matchday);
+  }, [league, matchday]);
 
-  const loadGames = async (md: number) => {
-    const gameList = await db.games.where("matchday").equals(md).toArray();
+  const loadGames = async (lg: LeagueKey, md: number) => {
+    const gameList = await db.games
+      .where("league")
+      .equals(lg)
+      .filter((g) => g.matchday === md)
+      .toArray();
+
     setGames(gameList);
   };
 
   const handleUpdateGame = async (id: string, updates: Partial<Game>) => {
     await db.games.update(id, updates);
-    loadGames(matchday);
+    loadGames(league, matchday);
   };
 
   const handleAddGame = async (
@@ -36,9 +42,10 @@ export default function FootballPage() {
       homeTeam,
       awayTeam,
       matchday,
+      league,
       date,
     });
-    loadGames(matchday);
+    loadGames(league, matchday);
   };
 
   return (
@@ -50,6 +57,23 @@ export default function FootballPage() {
         </Link>
       </div>
       <div className="mb-6">
+        <label className="block text-sm font-medium mb-2">Select League:</label>
+        <select
+          value={league}
+          onChange={(e) => {
+            setLeague(e.target.value as LeagueKey);
+            setMatchday(1); // Reset matchday when league changes
+          }}
+          className="border border-gray-300 min-w-1/3 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          {Object.entries(LEAGUES).map(([key, leagueData]) => (
+            <option key={key} value={key}>
+              {leagueData.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-6">
         <label className="block text-sm font-medium mb-2">
           Select Matchday:
         </label>
@@ -58,16 +82,19 @@ export default function FootballPage() {
           onChange={(e) => setMatchday(Number(e.target.value))}
           className="border border-gray-300 min-w-1/3 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {Array.from({ length: 38 }, (_, i) => i + 1).map((md) => (
+          {Array.from(
+            { length: LEAGUES[league].matchdays },
+            (_, i) => i + 1,
+          ).map((md) => (
             <option key={md} value={md}>
               Matchday {md}{" "}
             </option>
           ))}
         </select>
       </div>
-      <GameForm matchday={matchday} onAddGame={handleAddGame} />
+      <GameForm league={league} matchday={matchday} onAddGame={handleAddGame} />
       <h2 className="text-2xl font-semibold mt-8 mb-4">
-        Games for Matchday {matchday}
+        Games for {LEAGUES[league].name} Matchday {matchday}
       </h2>
       <GameList games={games} onUpdateGame={handleUpdateGame} />
     </div>
