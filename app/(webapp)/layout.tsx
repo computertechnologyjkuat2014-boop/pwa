@@ -9,7 +9,6 @@ export default function MainLayout({
     <div className="flex flex-col md:flex-row min-h-screen text-base font-sans">
       {/* Sidebar */}
       <Sidebar />
-      {/* Main Content */}
       <main className="flex-1 p-4">
         {/* <Navbar /> */}
         {children}
