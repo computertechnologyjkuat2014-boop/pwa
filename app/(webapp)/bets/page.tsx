@@ -31,7 +31,7 @@ function convertInputToProbabilities(odds: Odds): Odds {
 
   return values;
 }
-
+//
 function normalizeOdds(oddsList: Odds[]): Odds[] {
   return oddsList.map((odds) => {
     const probs = convertInputToProbabilities(odds);
