@@ -86,7 +86,7 @@ export default function Page() {
     }
   };
 
-  // ---------------- Render ----------------
+  // ---------------- Render -------------
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold">Betting Combination Generator</h1>
