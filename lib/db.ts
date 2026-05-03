@@ -2,7 +2,7 @@
 import { Expense } from "@/types/expense";
 import { ScheduleItem } from "@/types/schedule";
 import { Topic } from "@/types/topic";
-import { Game, Fixture, Prediction } from "@/types/football";
+import { Game, Fixture, Prediction, Odds } from "@/types/football";
 import Dexie, { Table } from "dexie";
 
 export class MyDatabase extends Dexie {
@@ -12,6 +12,7 @@ export class MyDatabase extends Dexie {
   games!: Table<Game>;
   fixtures!: Table<Fixture>;
   predictions!: Table<Prediction>;
+  odds!: Table<Odds>;
 
   constructor() {
     super("FinanceApp");
@@ -43,6 +44,10 @@ export class MyDatabase extends Dexie {
     this.version(6).stores({
       games:
         "++id, homeTeam, awayTeam, matchday, league, date, predictedOutcome, actualOutcome",
+    });
+    // Add version 7 for odds
+    this.version(7).stores({
+      odds: "++id, homeTeam, awayTeam, league, bookmaker, crawledAt, [homeTeam+awayTeam+bookmaker]",
     });
   }
 }

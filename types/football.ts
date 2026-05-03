@@ -29,6 +29,19 @@ export interface Prediction {
   updatedAt: number;
 }
 
+export interface Odds {
+  id: string;
+  homeTeam: string;
+  awayTeam: string;
+  league: string;
+  homeOdds: number;
+  drawOdds: number;
+  awayOdds: number;
+  bookmaker: string;
+  matchDate?: string;
+  crawledAt: number;
+}
+
 // EPL Teams (as of 2023/24 season)
 export const EPL_TEAMS = [
   "Arsenal",
