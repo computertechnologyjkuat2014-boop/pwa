@@ -4,10 +4,14 @@ import { useState } from "react";
 import {
   CHOICES,
   Odds,
-  normalizeOdds,
-  randomPrediction,
+  oddsToProb,
   rankCombinations,
-} from "./utils";
+  toDoubleChancePairs,
+} from "./BetseUtils";
+
+// =============================
+// COMPONENT
+// =============================
 
 function OddsRow({
   index,
@@ -51,25 +55,26 @@ function ResultsList({ results }: { results: string[] }) {
 }
 
 export default function Page() {
-  // ---------------- State ----------------
-  const [oddsList, setOddsList] = useState<Odds[]>([
-    { H: 2.0, D: 3.2, A: 3.5 },
+  const [matches, setMatches] = useState<Odds[]>([
+    { H: 2.1, D: 3.2, A: 3.5 },
+    { H: 1.8, D: 3.5, A: 4.2 },
+    { H: 2.5, D: 3.0, A: 2.8 },
+    { H: 2.0, D: 3.3, A: 3.6 },
   ]);
-  const [topN, setTopN] = useState(30);
+
+  const [topN, setTopN] = useState(20);
   const [results, setResults] = useState<string[]>([]);
-  const [randomPred, setRandomPred] = useState("");
-  const [basePred, setBasePred] = useState("");
   const [jsonInput, setJsonInput] = useState("");
 
-  // ---------------- Event Handlers ----------------
-  const addMatch = () => {
-    setOddsList([...oddsList, { H: 2, D: 3, A: 4 }]);
+  // Handle input change
+  const updateMatch = (index: number, field: keyof Odds, value: number) => {
+    const updated = [...matches];
+    updated[index][field] = value;
+    setMatches(updated);
   };
 
-  const updateOdds = (index: number, key: keyof Odds, value: number) => {
-    const updated = [...oddsList];
-    updated[index][key] = value;
-    setOddsList(updated);
+  const addMatch = () => {
+    setMatches([...matches, { H: 2, D: 3, A: 4 }]);
   };
 
   const addFromJson = () => {
@@ -83,7 +88,7 @@ export default function Page() {
           throw new Error("Each odds object must have H, D, A properties");
         }
       });
-      setOddsList([...oddsList, ...parsed]);
+      setMatches([...matches, ...parsed]);
       setJsonInput("");
     } catch (e: any) {
       alert("Invalid JSON: " + e.message);
@@ -91,34 +96,29 @@ export default function Page() {
   };
 
   const exportAsJson = () => {
-    const json = JSON.stringify(oddsList, null, 2);
+    const json = JSON.stringify(matches, null, 2);
     navigator.clipboard.writeText(json).then(() => {
       alert("Odds copied to clipboard as JSON");
     });
   };
 
+  // Generate results
   const generate = () => {
-    try {
-      const normalized = normalizeOdds(oddsList);
-      const randomP = randomPrediction(normalized);
-      const base = randomPrediction(normalized);
-      const ranked = rankCombinations(normalized, base, topN);
+    const probs = matches.map(oddsToProb);
 
-      setRandomPred(randomP);
-      setBasePred(base);
-      setResults(ranked);
-    } catch (e: any) {
-      alert(e.message);
-    }
+    const ranked = rankCombinations(probs, topN);
+
+    const paired = ranked.map((combo) => toDoubleChancePairs(combo, probs));
+
+    setResults(paired);
   };
 
-  // ---------------- Render -------------
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Betting Combination Generator</h1>
+      <h1 className="text-2xl font-bold">Double Chance Generator (HD / AD)</h1>
 
-      {oddsList.map((odds, index) => (
-        <OddsRow key={index} index={index} odds={odds} onChange={updateOdds} />
+      {matches.map((odds, index) => (
+        <OddsRow key={index} index={index} odds={odds} onChange={updateMatch} />
       ))}
 
       <button
@@ -169,17 +169,7 @@ export default function Page() {
         Generate
       </button>
 
-      {results.length > 0 && (
-        <div>
-          <p>
-            <strong>Random Prediction:</strong> {randomPred}
-          </p>
-          <p>
-            <strong>Base Pattern:</strong> {basePred}
-          </p>
-          <ResultsList results={results} />
-        </div>
-      )}
+      {results.length > 0 && <ResultsList results={results} />}
     </div>
   );
 }
