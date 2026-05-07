@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import {
   CHOICES,
   Odds,
@@ -8,6 +10,7 @@ import {
   randomPrediction,
   rankCombinations,
 } from "./utils";
+import { generateBetPDF } from "./pdfUtils";
 
 function OddsRow({
   index,
@@ -50,6 +53,34 @@ function ResultsList({ results }: { results: string[] }) {
   );
 }
 
+function ActualOutcomesRow({
+  index,
+  outcome,
+  onChange,
+}: {
+  index: number;
+  outcome: string;
+  onChange: (index: number, value: string) => void;
+}) {
+  return (
+    <div className="flex gap-2 items-center">
+      <span>Match {index + 1} Actual:</span>
+      <select
+        value={outcome}
+        onChange={(e) => onChange(index, e.target.value)}
+        className="border p-1"
+      >
+        <option value="">Select</option>
+        {CHOICES.map((choice) => (
+          <option key={choice} value={choice}>
+            {choice}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 export default function Page() {
   // ---------------- State ----------------
   const [oddsList, setOddsList] = useState<Odds[]>([
@@ -60,6 +91,7 @@ export default function Page() {
   const [randomPred, setRandomPred] = useState("");
   const [basePred, setBasePred] = useState("");
   const [jsonInput, setJsonInput] = useState("");
+  const [actualOutcomes, setActualOutcomes] = useState<string[]>([]);
 
   // ---------------- Event Handlers ----------------
   const addMatch = () => {
@@ -70,6 +102,21 @@ export default function Page() {
     const updated = [...oddsList];
     updated[index][key] = value;
     setOddsList(updated);
+  };
+
+  const updateActualOutcome = (index: number, value: string) => {
+    const updated = [...actualOutcomes];
+    updated[index] = value;
+    setActualOutcomes(updated);
+  };
+
+  const saveAsPDF = () => {
+    generateBetPDF({
+      title: "Betting Combinations Report",
+      oddsList,
+      results,
+      actualOutcomes,
+    });
   };
 
   const addFromJson = () => {
@@ -107,6 +154,7 @@ export default function Page() {
       setRandomPred(randomP);
       setBasePred(base);
       setResults(ranked);
+      setActualOutcomes(new Array(oddsList.length).fill(""));
     } catch (e: any) {
       alert(e.message);
     }
@@ -178,6 +226,25 @@ export default function Page() {
             <strong>Base Pattern:</strong> {basePred}
           </p>
           <ResultsList results={results} />
+
+          <div className="mt-4">
+            <h2 className="font-bold">Actual Outcomes</h2>
+            {actualOutcomes.map((outcome, index) => (
+              <ActualOutcomesRow
+                key={index}
+                index={index}
+                outcome={outcome}
+                onChange={updateActualOutcome}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={saveAsPDF}
+            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+          >
+            Save as PDF
+          </button>
         </div>
       )}
     </div>
