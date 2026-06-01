@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+/node-v24.16.0-win-x64
 /node_modules
 /.pnp
 .pnp.*
